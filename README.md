@@ -127,14 +127,15 @@ Your task is to refactor this code into multiple classes, each with a single res
 - `UserRepository` - Handles user data storage/retrieval
 - `EmailValidator` - Validates email formats
 - `Logger` - Handles logging
-- `DataExporter` - Handles file export operations
 - `UserService` - Orchestrates user operations
+
+**Note:** A complete reference solution is available in `refactored_partial.py`, but try the exercise yourself first! This file shows how the refactored code should look when properly following SRP principles.
 
 ## 🧪 Running Tests
 
-The repository includes comprehensive unit tests that work both before and after refactoring:
+The repository includes comprehensive unit tests that work both before and after refactoring. The test file (`test_user_manager.py`) is designed to automatically test both the original `UserManager` class and the refactored solution when available.
 
-### Option 1: Using pytest (recommended)
+### Using pytest (recommended)
 ```bash
 # Run all tests with verbose output
 python -m pytest test_user_manager.py -v
@@ -145,6 +146,14 @@ python -m pytest test_user_manager.py --cov=user_manager --cov-report=html
 # Run specific test
 python -m pytest test_user_manager.py::TestUserManager::test_create_user_success -v
 ```
+
+### How the Tests Work
+
+The tests use a smart fixture that automatically detects and tests both implementations:
+- **Original Implementation**: Tests the `UserManager` class from `user_manager.py`
+- **Refactored Implementation**: Tests the refactored solution from `refactored_partial.py` (when available)
+
+This ensures that both versions maintain identical functionality!
 
 ### Test Categories
 
@@ -175,9 +184,11 @@ The tests cover:
 ### Phase 3: Refactor the Code (45 minutes)
 
 1. **Create individual classes** - Start with the simplest responsibilities
-2. **Update the main class** - Make it use the new specialized classes
+2. **Update the main class** - Make it use the new specialized classes  
 3. **Run tests frequently** - Ensure functionality is preserved
 4. **Refine and improve** - Clean up code and improve design
+
+**Note**: A complete reference solution is available in `refactored_partial.py` to compare your implementation against after you've attempted the refactoring yourself.
 
 ### Phase 4: Reflection (15 minutes)
 
@@ -188,19 +199,16 @@ The tests cover:
 ## 📁 Repository Structure
 
 ```text
-srp-exercise/
+SOLID-SRP/
 ├── README.md                 # This file
 ├── requirements.txt          # Python dependencies
 ├── user_manager.py          # Original code with SRP violations
 ├── test_user_manager.py     # Comprehensive unit tests (pytest)
-├── simple_tests.py          # Simple test runner (alternative to pytest)
-├── refactored_example.py    # Reference solution (don't peek!)
+├── refactored_partial.py    # Complete refactored solution (reference)
+├── users_backup.json       # Backup data file (generated during testing)
 ├── .gitignore              # Git ignore file
-└── refactored/             # (You'll create this during the exercise)
-    ├── models/
-    ├── services/
-    ├── validators/
-    └── ...
+├── venv/                   # Virtual environment (created after setup)
+└── __pycache__/            # Python cache files (generated)
 ```
 
 ## 💡 Tips for Success
