@@ -1,0 +1,12 @@
+# Requirements for the Single Responsibility Principle (SRP) Exercise
+
+# Core dependencies for the exercise
+pytest>=7.0.0
+
+# Optional: For better test output and reporting
+pytest-cov>=4.0.0
+pytest-html>=3.0.0
+
+# Optional: For code formatting (good practice)
+black>=22.0.0
+flake8>=5.0.0

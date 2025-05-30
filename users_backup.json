@@ -1,0 +1,16 @@
+{
+  "john_doe": {
+    "username": "john_doe",
+    "email": "john.doe@newdomain.com",
+    "password": "3afeed04eeca02f36260571b19deb0898adfabcf3d0283aacdc9cafb81e0b0e1",
+    "created_at": "2025-05-28T16:23:40.180756",
+    "is_active": true
+  },
+  "jane_smith": {
+    "username": "jane_smith",
+    "email": "jane@example.com",
+    "password": "793e8b274005e66a8acea5ba59ff08da02578ed7c83664296b73a528adc2f613",
+    "created_at": "2025-05-28T16:23:40.180779",
+    "is_active": true
+  }
+}
