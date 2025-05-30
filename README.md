@@ -106,12 +106,10 @@ If you see this mix of passing and failing tests, you're ready to start! 🎉
 This UserManager class has multiple responsibilities:
 1. User data management (CRUD operations)
 2. Email validation
-3. Logging operations
 
 This violates SRP because the class has multiple reasons to change:
 - Changes in user data structure
 - Changes in email validation rules
-- Changes in logging requirements
 
 ### Why This Is a Problem
 
@@ -127,7 +125,6 @@ Your task is to refactor this code into multiple classes, each with a single res
 - `User` - Represents user data
 - `UserRepository` - Handles user data storage/retrieval
 - `EmailValidator` - Validates email formats
-- `Logger` - Handles logging
 - `UserService` - Orchestrates user operations
 
 **Note:** A partial template solution is available in `refactored_partial.py` to help guide your refactoring. This template provides the class structure and method signatures, but you'll need to complete the implementation marked with TODO comments.
