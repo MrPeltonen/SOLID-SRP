@@ -2,6 +2,8 @@
 
 Welcome to the hands-on exercise for learning the Single Responsibility Principle (SRP) - the first principle of SOLID design principles. This repository contains a practical Python example that violates SRP, along with comprehensive unit tests to help you understand and practice refactoring code to follow SRP.
 
+**⏱️ Estimated Duration: 1 hour**
+
 ## 🎯 Learning Objectives
 
 By the end of this exercise, you will:
@@ -90,9 +92,6 @@ cd SOLID-SRP
 Run the example code to make sure everything works:
 
 ```bash
-# Run the example (shows SRP violations in action)
-python user_manager.py
-
 # Run the unit tests (all should pass)
 python -m pytest test_user_manager.py -v
 ```
@@ -107,13 +106,11 @@ This UserManager class has multiple responsibilities:
 1. User data management (CRUD operations)
 2. Email validation
 3. Logging operations
-4. File operations (JSON export)
 
 This violates SRP because the class has multiple reasons to change:
 - Changes in user data structure
 - Changes in email validation rules
 - Changes in logging requirements
-- Changes in file export format
 
 ### Why This Is a Problem
 
@@ -149,14 +146,6 @@ python -m pytest test_user_manager.py --cov=user_manager --cov-report=html
 python -m pytest test_user_manager.py::TestUserManager::test_create_user_success -v
 ```
 
-### Option 2: Using simple test runner (if pytest has issues)
-```bash
-# Run all tests with simple runner
-python simple_tests.py
-```
-
-**Note:** If you encounter pytest compatibility issues, use the simple test runner. Both test suites cover the same functionality and ensure your code works correctly.
-
 ### Test Categories
 
 The tests cover:
@@ -166,7 +155,6 @@ The tests cover:
 - ✅ User deletion
 - ✅ Email validation patterns
 - ✅ Logging functionality
-- ✅ Data export features
 - ✅ Complete workflow integration
 
 ## 🎯 Exercise Instructions

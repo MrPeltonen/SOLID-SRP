@@ -8,8 +8,6 @@ Run with: python -m pytest test_user_manager.py -v
 """
 
 import pytest
-import json
-import os
 from user_manager import UserManager
 
 
@@ -162,30 +160,6 @@ class TestUserManager:
             assert 'message' in log
             assert isinstance(log['timestamp'], str)
             assert isinstance(log['message'], str)
-    
-    def test_export_users_to_json(self):
-        """Test exporting users to JSON file."""
-        # Create some users
-        self.user_manager.create_user("user1", "user1@example.com")
-        self.user_manager.create_user("user2", "user2@example.com")
-        
-        # Export to file
-        filename = "test_users.json"
-        result = self.user_manager.export_users_to_json(filename)
-        
-        assert result is True
-        assert os.path.exists(filename)
-        
-        # Verify file contents
-        with open(filename, 'r') as f:
-            exported_data = json.load(f)
-        
-        assert len(exported_data) == 2
-        assert "user1" in exported_data
-        assert "user2" in exported_data
-        
-        # Clean up
-        os.remove(filename)
     
     def test_user_workflow_integration(self):
         """Test a complete user workflow."""

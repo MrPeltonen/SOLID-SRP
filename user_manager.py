@@ -4,7 +4,6 @@ Example of a Python class that violates the Single Responsibility Principle (SRP
 """
 
 import re
-import json
 from datetime import datetime
 
 class UserManager:
@@ -103,16 +102,7 @@ class UserManager:
         """Retrieve all log entries."""
         return self.log_entries
     
-    def export_users_to_json(self, filename):
-        """Export users data to JSON file - another responsibility."""
-        try:
-            with open(filename, 'w') as f:
-                json.dump(self.users, f, indent=2)
-            self._log(f"Users exported to {filename}")
-            return True
-        except Exception as e:
-            self._log(f"Failed to export users: {str(e)}")
-            return False
+
 
 
 # Example usage 
@@ -137,9 +127,6 @@ if __name__ == "__main__":
         print("User updated successfully")
     except ValueError as e:
         print(f"Error updating user: {e}")
-    
-    # Export data (file operations)
-    user_manager.export_users_to_json("users_backup.json")
     
     # View logs
     logs = user_manager.get_logs()

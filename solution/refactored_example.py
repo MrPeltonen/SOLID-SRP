@@ -8,19 +8,16 @@ This UserManager class has multiple responsibilities:
 1. User data management (CRUD operations)
 2. Email validation
 3. Logging operations
-4. File operations (JSON export)
 
 This violates SRP because the class has multiple reasons to change:
 - Changes in user data structure
 - Changes in email validation rules
 - Changes in logging requirements
-- Changes in file export format
 """
 
 from abc import ABC, abstractmethod
 from datetime import datetime
 import re
-import json
 
 
 # ========================
@@ -124,28 +121,7 @@ class UserRepository:
 
 
 # ========================
-# 5. File Operations Service
-# ========================
-class DataExporter:
-    """Single responsibility: Handle data export operations."""
-    
-    def __init__(self, logger: Logger):
-        self.logger = logger
-    
-    def export_to_json(self, data: dict, filename: str) -> bool:
-        """Export data to JSON file."""
-        try:
-            with open(filename, 'w') as f:
-                json.dump(data, f, indent=2)
-            self.logger.log(f"Data exported to {filename}")
-            return True
-        except Exception as e:
-            self.logger.log(f"Failed to export data: {str(e)}")
-            return False
-
-
-# ========================
-# 6. Main Service (Orchestrator)
+# 4. Main Service (Orchestrator)
 # ========================
 class UserService:
     """
@@ -156,13 +132,11 @@ class UserService:
     def __init__(self, 
                  user_repository: UserRepository,
                  email_validator: EmailValidator,
-                 logger: Logger,
-                 data_exporter: DataExporter):
+                 logger: Logger):
         
         self.user_repository = user_repository
         self.email_validator = email_validator
         self.logger = logger
-        self.data_exporter = data_exporter
     
     def create_user(self, username: str, email: str):
         """Create a new user with validation."""
@@ -234,32 +208,24 @@ class UserService:
         users = self.user_repository.find_all()
         return [user.to_dict() for user in users]
     
-    def export_users_to_json(self, filename: str):
-        """Export users to JSON file."""
-        users = self.user_repository.find_all()
-        users_dict = {user.username: user.to_dict() for user in users}
-        return self.data_exporter.export_to_json(users_dict, filename)
-    
     def get_logs(self):
         """Get system logs."""
         return self.logger.get_logs()
 
 
 # ========================
-# 7. Factory/Builder for Easy Setup
+# 5. Factory/Builder for Easy Setup
 # ========================
 def create_user_service():
     """Factory function to create a fully configured UserService."""
     logger = Logger()
     user_repository = UserRepository()
     email_validator = EmailValidator()
-    data_exporter = DataExporter(logger)
     
     return UserService(
         user_repository=user_repository,
         email_validator=email_validator,
-        logger=logger,
-        data_exporter=data_exporter
+        logger=logger
     )
 
 
@@ -288,9 +254,6 @@ if __name__ == "__main__":
         print("User updated successfully")
     except ValueError as e:
         print(f"Error updating user: {e}")
-    
-    # Export data
-    user_service.export_users_to_json("users_backup.json")
     
     # View logs
     logs = user_service.get_logs()
