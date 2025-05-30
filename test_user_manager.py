@@ -22,37 +22,29 @@ class TestUserManager:
     
     def test_create_user_success(self):
         """Test successful user creation."""
-        user = self.user_manager.create_user("testuser", "test@example.com", "Password123")
+        user = self.user_manager.create_user("testuser", "test@example.com")
         
         assert user['username'] == "testuser"
         assert user['email'] == "test@example.com"
         assert user['is_active'] is True
         assert 'created_at' in user
-        assert 'password' in user
-        # Password should be encrypted (not plain text)
-        assert user['password'] != "Password123"
     
     def test_create_user_invalid_email(self):
         """Test user creation with invalid email."""
         with pytest.raises(ValueError, match="Invalid email format"):
-            self.user_manager.create_user("testuser", "invalid-email", "Password123")
-    
-    def test_create_user_weak_password(self):
-        """Test user creation with weak password."""
-        with pytest.raises(ValueError, match="Password must be at least 8 characters"):
-            self.user_manager.create_user("testuser", "test@example.com", "weak")
+            self.user_manager.create_user("testuser", "invalid-email")
     
     def test_create_user_duplicate_username(self):
         """Test creating user with existing username."""
-        self.user_manager.create_user("testuser", "test@example.com", "Password123")
+        self.user_manager.create_user("testuser", "test@example.com")
         
         with pytest.raises(ValueError, match="User already exists"):
-            self.user_manager.create_user("testuser", "test2@example.com", "Password456")
+            self.user_manager.create_user("testuser", "test2@example.com")
     
     def test_get_user_success(self):
         """Test successful user retrieval."""
         # Create user first
-        created_user = self.user_manager.create_user("testuser", "test@example.com", "Password123")
+        created_user = self.user_manager.create_user("testuser", "test@example.com")
         
         # Retrieve user
         retrieved_user = self.user_manager.get_user("testuser")
@@ -69,7 +61,7 @@ class TestUserManager:
     def test_update_user_success(self):
         """Test successful user update."""
         # Create user first
-        self.user_manager.create_user("testuser", "test@example.com", "Password123")
+        self.user_manager.create_user("testuser", "test@example.com")
         
         # Update user
         updated_user = self.user_manager.update_user("testuser", email="newemail@example.com")
@@ -77,31 +69,12 @@ class TestUserManager:
         assert updated_user['email'] == "newemail@example.com"
         assert updated_user['username'] == "testuser"  # Should remain unchanged
     
-    def test_update_user_password(self):
-        """Test updating user password."""
-        # Create user first
-        self.user_manager.create_user("testuser", "test@example.com", "Password123")
-        original_password = self.user_manager.get_user("testuser")['password']
-        
-        # Update password
-        updated_user = self.user_manager.update_user("testuser", password="NewPassword456")
-        
-        assert updated_user['password'] != original_password
-        assert updated_user['password'] != "NewPassword456"  # Should be encrypted
-    
     def test_update_user_invalid_email(self):
         """Test updating user with invalid email."""
-        self.user_manager.create_user("testuser", "test@example.com", "Password123")
+        self.user_manager.create_user("testuser", "test@example.com")
         
         with pytest.raises(ValueError, match="Invalid email format"):
             self.user_manager.update_user("testuser", email="invalid-email")
-    
-    def test_update_user_weak_password(self):
-        """Test updating user with weak password."""
-        self.user_manager.create_user("testuser", "test@example.com", "Password123")
-        
-        with pytest.raises(ValueError, match="Password must be at least 8 characters"):
-            self.user_manager.update_user("testuser", password="weak")
     
     def test_update_user_not_found(self):
         """Test updating non-existent user."""
@@ -111,7 +84,7 @@ class TestUserManager:
     def test_delete_user_success(self):
         """Test successful user deletion."""
         # Create user first
-        self.user_manager.create_user("testuser", "test@example.com", "Password123")
+        self.user_manager.create_user("testuser", "test@example.com")
         assert self.user_manager.get_user("testuser") is not None
         
         # Delete user
@@ -132,8 +105,8 @@ class TestUserManager:
         assert len(users) == 0
         
         # Create some users
-        self.user_manager.create_user("user1", "user1@example.com", "Password123")
-        self.user_manager.create_user("user2", "user2@example.com", "Password456")
+        self.user_manager.create_user("user1", "user1@example.com")
+        self.user_manager.create_user("user2", "user2@example.com")
         
         # List users
         users = self.user_manager.list_users()
@@ -141,16 +114,6 @@ class TestUserManager:
         usernames = [user['username'] for user in users]
         assert "user1" in usernames
         assert "user2" in usernames
-    
-    def test_password_encryption(self):
-        """Test that passwords are properly encrypted."""
-        password = "TestPassword123"
-        user = self.user_manager.create_user("testuser", "test@example.com", password)
-        
-        # Password should not be stored in plain text
-        assert user['password'] != password
-        # Should be a hash (64 characters for SHA-256)
-        assert len(user['password']) == 64
     
     def test_email_validation_patterns(self):
         """Test various email validation patterns."""
@@ -173,48 +136,19 @@ class TestUserManager:
         # Test valid emails
         for i, email in enumerate(valid_emails):
             try:
-                self.user_manager.create_user(f"user{i}", email, "Password123")
+                self.user_manager.create_user(f"user{i}", email)
             except ValueError:
                 pytest.fail(f"Valid email {email} was rejected")
         
         # Test invalid emails
         for i, email in enumerate(invalid_emails):
             with pytest.raises(ValueError, match="Invalid email format"):
-                self.user_manager.create_user(f"testuser{i}", email, "Password123")
-    
-    def test_password_validation_patterns(self):
-        """Test various password validation patterns."""
-        invalid_passwords = [
-            "short",              # Too short
-            "alllowercase123",    # No uppercase
-            "ALLUPPERCASE123",    # No lowercase
-            "NoNumbers",          # No numbers
-            "12345678",           # No letters (only numbers)
-            ""                    # Empty
-        ]
-        
-        valid_passwords = [
-            "Password123",
-            "StrongPass1",
-            "MySecure2024Pass"
-        ]
-        
-        # Test valid passwords
-        for i, password in enumerate(valid_passwords):
-            try:
-                self.user_manager.create_user(f"user{i}", f"user{i}@example.com", password)
-            except ValueError:
-                pytest.fail(f"Valid password was rejected")
-        
-        # Test invalid passwords
-        for password in invalid_passwords:
-            with pytest.raises(ValueError, match="Password must be at least 8 characters"):
-                self.user_manager.create_user("testuser", "test@example.com", password)
+                self.user_manager.create_user(f"testuser{i}", email)
     
     def test_logging_functionality(self):
         """Test that operations are being logged."""
         # Perform some operations
-        self.user_manager.create_user("testuser", "test@example.com", "Password123")
+        self.user_manager.create_user("testuser", "test@example.com")
         self.user_manager.get_user("testuser")
         self.user_manager.update_user("testuser", email="newemail@example.com")
         
@@ -232,8 +166,8 @@ class TestUserManager:
     def test_export_users_to_json(self):
         """Test exporting users to JSON file."""
         # Create some users
-        self.user_manager.create_user("user1", "user1@example.com", "Password123")
-        self.user_manager.create_user("user2", "user2@example.com", "Password456")
+        self.user_manager.create_user("user1", "user1@example.com")
+        self.user_manager.create_user("user2", "user2@example.com")
         
         # Export to file
         filename = "test_users.json"
@@ -256,7 +190,7 @@ class TestUserManager:
     def test_user_workflow_integration(self):
         """Test a complete user workflow."""
         # Create user
-        user = self.user_manager.create_user("workflow_user", "workflow@example.com", "TestPass123")
+        user = self.user_manager.create_user("workflow_user", "workflow@example.com")
         assert user['username'] == "workflow_user"
         
         # Verify user exists

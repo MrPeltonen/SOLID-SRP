@@ -103,15 +103,17 @@ If you see the example output and all tests pass, you're ready to start! 🎉
 
 ### The Problem: SRP Violations
 
-The `UserManager` class in `user_manager.py` violates the Single Responsibility Principle because it handles multiple responsibilities:
+This UserManager class has multiple responsibilities:
+1. User data management (CRUD operations)
+2. Email validation
+3. Logging operations
+4. File operations (JSON export)
 
-1. **User Data Management** - CRUD operations for users
-2. **Email Validation** - Checking if emails are properly formatted
-3. **Password Validation** - Ensuring passwords meet security requirements
-4. **Password Encryption** - Hashing passwords for security
-5. **Email Sending** - Sending welcome/goodbye emails
-6. **Logging** - Recording system events
-7. **File Operations** - Exporting user data to JSON
+This violates SRP because the class has multiple reasons to change:
+- Changes in user data structure
+- Changes in email validation rules
+- Changes in logging requirements
+- Changes in file export format
 
 ### Why This Is a Problem
 
@@ -127,10 +129,8 @@ Your task is to refactor this code into multiple classes, each with a single res
 - `User` - Represents user data
 - `UserRepository` - Handles user data storage/retrieval
 - `EmailValidator` - Validates email formats
-- `PasswordValidator` - Validates password strength
-- `PasswordEncryption` - Handles password hashing
-- `EmailService` - Sends emails
 - `Logger` - Handles logging
+- `DataExporter` - Handles file export operations
 - `UserService` - Orchestrates user operations
 
 ## 🧪 Running Tests
@@ -165,8 +165,6 @@ The tests cover:
 - ✅ User retrieval and updates
 - ✅ User deletion
 - ✅ Email validation patterns
-- ✅ Password validation patterns
-- ✅ Password encryption
 - ✅ Logging functionality
 - ✅ Data export features
 - ✅ Complete workflow integration

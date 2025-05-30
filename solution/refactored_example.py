@@ -3,11 +3,22 @@ This file provides a template/example of how the refactored code might look afte
 This is for reference and discussion during the training session.
 
 DO NOT look at this until after you've attempted the refactoring yourself!
+
+This UserManager class has multiple responsibilities:
+1. User data management (CRUD operations)
+2. Email validation
+3. Logging operations
+4. File operations (JSON export)
+
+This violates SRP because the class has multiple reasons to change:
+- Changes in user data structure
+- Changes in email validation rules
+- Changes in logging requirements
+- Changes in file export format
 """
 
 from abc import ABC, abstractmethod
 from datetime import datetime
-import hashlib
 import re
 import json
 
@@ -18,10 +29,9 @@ import json
 class User:
     """Represents a user entity - Single responsibility: Hold user data."""
     
-    def __init__(self, username: str, email: str, encrypted_password: str):
+    def __init__(self, username: str, email: str):
         self.username = username
         self.email = email
-        self.encrypted_password = encrypted_password
         self.created_at = datetime.now().isoformat()
         self.is_active = True
     
@@ -30,7 +40,6 @@ class User:
         return {
             'username': self.username,
             'email': self.email,
-            'password': self.encrypted_password,
             'created_at': self.created_at,
             'is_active': self.is_active
         }
@@ -51,41 +60,16 @@ class EmailValidator:
     @staticmethod
     def is_valid(email: str) -> bool:
         """Check if email format is valid."""
-        pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        # Pattern that allows valid characters but prevents consecutive dots
+        pattern = r'^[a-zA-Z0-9][a-zA-Z0-9._+%-]*[a-zA-Z0-9]@[a-zA-Z0-9]([a-zA-Z0-9.-]*[a-zA-Z0-9])?\.[a-zA-Z]{2,}$'
+        # Check for consecutive dots which should not be allowed
+        if '..' in email:
+            return False
         return re.match(pattern, email) is not None
 
 
-class PasswordValidator:
-    """Single responsibility: Validate password strength."""
-    
-    @staticmethod
-    def is_valid(password: str) -> bool:
-        """Check if password meets security requirements."""
-        if len(password) < 8:
-            return False
-        if not re.search(r'[A-Z]', password):
-            return False
-        if not re.search(r'[a-z]', password):
-            return False
-        if not re.search(r'\d', password):
-            return False
-        return True
-
-
 # ========================
-# 3. Security Service
-# ========================
-class PasswordEncryption:
-    """Single responsibility: Handle password encryption."""
-    
-    @staticmethod
-    def encrypt(password: str) -> str:
-        """Encrypt password using SHA-256."""
-        return hashlib.sha256(password.encode()).hexdigest()
-
-
-# ========================
-# 4. Logging Service
+# 3. Logging Service
 # ========================
 class Logger:
     """Single responsibility: Handle logging operations."""
@@ -107,29 +91,7 @@ class Logger:
 
 
 # ========================
-# 5. Communication Service
-# ========================
-class EmailService:
-    """Single responsibility: Handle email communications."""
-    
-    def __init__(self, logger: Logger):
-        self.logger = logger
-    
-    def send_welcome_email(self, email: str, username: str):
-        """Send welcome email to new user."""
-        message = f"Welcome {username}! Your account has been created successfully."
-        self.logger.log(f"Welcome email sent to {email}: {message}")
-        # In real implementation, integrate with email service provider
-    
-    def send_goodbye_email(self, email: str, username: str):
-        """Send goodbye email to deleted user."""
-        message = f"Goodbye {username}! Your account has been deleted."
-        self.logger.log(f"Goodbye email sent to {email}: {message}")
-        # In real implementation, integrate with email service provider
-
-
-# ========================
-# 6. Data Storage Service
+# 4. Data Storage Service
 # ========================
 class UserRepository:
     """Single responsibility: Handle user data persistence."""
@@ -162,7 +124,7 @@ class UserRepository:
 
 
 # ========================
-# 7. File Operations Service
+# 5. File Operations Service
 # ========================
 class DataExporter:
     """Single responsibility: Handle data export operations."""
@@ -183,42 +145,31 @@ class DataExporter:
 
 
 # ========================
-# 8. Main Service (Orchestrator)
+# 6. Main Service (Orchestrator)
 # ========================
 class UserService:
     """
     Single responsibility: Orchestrate user operations.
-    This class coordinates between other services but doesn't contain business logic for validation, encryption, etc.
+    This class coordinates between other services but doesn't contain business logic for validation, etc.
     """
     
     def __init__(self, 
                  user_repository: UserRepository,
                  email_validator: EmailValidator,
-                 password_validator: PasswordValidator,
-                 password_encryption: PasswordEncryption,
-                 email_service: EmailService,
                  logger: Logger,
                  data_exporter: DataExporter):
         
         self.user_repository = user_repository
         self.email_validator = email_validator
-        self.password_validator = password_validator
-        self.password_encryption = password_encryption
-        self.email_service = email_service
         self.logger = logger
         self.data_exporter = data_exporter
     
-    def create_user(self, username: str, email: str, password: str):
+    def create_user(self, username: str, email: str):
         """Create a new user with validation."""
         # Validate email
         if not self.email_validator.is_valid(email):
             self.logger.log(f"Failed to create user {username}: Invalid email")
             raise ValueError("Invalid email format")
-        
-        # Validate password
-        if not self.password_validator.is_valid(password):
-            self.logger.log(f"Failed to create user {username}: Weak password")
-            raise ValueError("Password must be at least 8 characters with uppercase, lowercase, and number")
         
         # Check if user already exists
         if self.user_repository.exists(username):
@@ -226,15 +177,11 @@ class UserService:
             raise ValueError("User already exists")
         
         # Create user
-        encrypted_password = self.password_encryption.encrypt(password)
-        user = User(username, email, encrypted_password)
+        user = User(username, email)
         
         # Save user
         self.user_repository.save(user)
         self.logger.log(f"User {username} created successfully")
-        
-        # Send welcome email
-        self.email_service.send_welcome_email(email, username)
         
         return user.to_dict()
     
@@ -261,14 +208,6 @@ class UserService:
                 self.logger.log(f"Failed to update user {username}: Invalid email")
                 raise ValueError("Invalid email format")
         
-        # Validate and encrypt password if being updated
-        if 'password' in kwargs:
-            if not self.password_validator.is_valid(kwargs['password']):
-                self.logger.log(f"Failed to update user {username}: Weak password")
-                raise ValueError("Password must be at least 8 characters with uppercase, lowercase, and number")
-            kwargs['encrypted_password'] = self.password_encryption.encrypt(kwargs['password'])
-            del kwargs['password']  # Remove plain password
-        
         # Update user
         user.update(**kwargs)
         self.user_repository.save(user)  # Save updated user
@@ -283,14 +222,9 @@ class UserService:
             self.logger.log(f"Failed to delete user {username}: User not found")
             raise ValueError("User not found")
         
-        email = user.email
-        
         # Delete user
         self.user_repository.delete(username)
         self.logger.log(f"User {username} deleted successfully")
-        
-        # Send goodbye email
-        self.email_service.send_goodbye_email(email, username)
         
         return True
     
@@ -312,24 +246,18 @@ class UserService:
 
 
 # ========================
-# 9. Factory/Builder for Easy Setup
+# 7. Factory/Builder for Easy Setup
 # ========================
 def create_user_service():
     """Factory function to create a fully configured UserService."""
     logger = Logger()
     user_repository = UserRepository()
     email_validator = EmailValidator()
-    password_validator = PasswordValidator()
-    password_encryption = PasswordEncryption()
-    email_service = EmailService(logger)
     data_exporter = DataExporter(logger)
     
     return UserService(
         user_repository=user_repository,
         email_validator=email_validator,
-        password_validator=password_validator,
-        password_encryption=password_encryption,
-        email_service=email_service,
         logger=logger,
         data_exporter=data_exporter
     )
@@ -344,8 +272,8 @@ if __name__ == "__main__":
     
     # Same functionality as before, but now following SRP
     try:
-        user1 = user_service.create_user("john_doe", "john@example.com", "SecurePass123")
-        user2 = user_service.create_user("jane_smith", "jane@example.com", "StrongPass456")
+        user1 = user_service.create_user("john_doe", "john@example.com")
+        user2 = user_service.create_user("jane_smith", "jane@example.com")
         print("Users created successfully")
     except ValueError as e:
         print(f"Error creating user: {e}")
