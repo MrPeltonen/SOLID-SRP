@@ -34,9 +34,9 @@ Before starting this exercise, ensure you have:
 Clone this repository to your local machine:
 
 ```bash
-# Clone the repository (replace YOUR_REPOSITORY_URL with the actual URL)
-git clone YOUR_REPOSITORY_URL
-cd srp-exercise
+# Clone the repository
+git clone git@github.com:MrPeltonen/SOLID-SRP.git
+cd SOLID-SRP
 ```
 
 ### Step 2: Set Up Python Environment
@@ -49,9 +49,6 @@ cd srp-exercise
    ```
    If Python 3.9+ is not installed, install it using Homebrew:
    ```bash
-   # Install Homebrew if you don't have it
-   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-   
    # Install Python
    brew install python@3.9
    ```

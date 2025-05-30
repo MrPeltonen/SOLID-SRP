@@ -125,7 +125,11 @@ class UserManager:
     
     def _is_valid_email(self, email):
         """Email validation responsibility - should be separate."""
-        pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        # Pattern that allows valid characters but prevents consecutive dots
+        pattern = r'^[a-zA-Z0-9][a-zA-Z0-9._+%-]*[a-zA-Z0-9]@[a-zA-Z0-9]([a-zA-Z0-9.-]*[a-zA-Z0-9])?\.[a-zA-Z]{2,}$'
+        # Check for consecutive dots which should not be allowed
+        if '..' in email:
+            return False
         return re.match(pattern, email) is not None
     
     def _is_valid_password(self, password):

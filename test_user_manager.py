@@ -178,9 +178,9 @@ class TestUserManager:
                 pytest.fail(f"Valid email {email} was rejected")
         
         # Test invalid emails
-        for email in invalid_emails:
+        for i, email in enumerate(invalid_emails):
             with pytest.raises(ValueError, match="Invalid email format"):
-                self.user_manager.create_user("testuser", email, "Password123")
+                self.user_manager.create_user(f"testuser{i}", email, "Password123")
     
     def test_password_validation_patterns(self):
         """Test various password validation patterns."""
@@ -189,7 +189,7 @@ class TestUserManager:
             "alllowercase123",    # No uppercase
             "ALLUPPERCASE123",    # No lowercase
             "NoNumbers",          # No numbers
-            "NoLetters123",       # No letters (this should actually pass, but let's say it fails)
+            "12345678",           # No letters (only numbers)
             ""                    # Empty
         ]
         
