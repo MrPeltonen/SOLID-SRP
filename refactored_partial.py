@@ -41,13 +41,21 @@ class User:
     def to_dict(self):
         """Convert user to dictionary representation."""
         # TODO: Implement method to return user data as dictionary
-        # Should return: {'username': ..., 'email': ..., 'created_at': ..., 'is_active': ...}
+        # Should return: {
+        #     'username': self.username,
+        #     'email': self.email,
+        #     'created_at': self.created_at,
+        #     'is_active': self.is_active
+        # }
         pass
     
     def update(self, **kwargs):
         """Update user attributes."""
         # TODO: Implement method to update user attributes
-        # Hint: Use setattr() and hasattr() to update only valid attributes
+        # For each key, value in kwargs.items():
+        #   - Check if the attribute exists using hasattr(self, key)
+        #   - If it exists, update it using setattr(self, key, value)
+        # This allows updating email, is_active, or other valid attributes
         pass
 
 
@@ -62,10 +70,10 @@ class EmailValidator:
         """Check if email format is valid."""
         # TODO: Implement email validation logic
         # Requirements:
-        # - Use regex pattern to validate email format
-        # - Pattern should be: r'^[a-zA-Z0-9][a-zA-Z0-9._+%-]*[a-zA-Z0-9]@[a-zA-Z0-9]([a-zA-Z0-9.-]*[a-zA-Z0-9])?\.[a-zA-Z]{2,}$'
+        # - Use regex pattern: r'^[a-zA-Z0-9][a-zA-Z0-9._+%-]*[a-zA-Z0-9]@[a-zA-Z0-9]([a-zA-Z0-9.-]*[a-zA-Z0-9])?\.[a-zA-Z]{2,}$'
         # - Check for consecutive dots (..) which should not be allowed
         # - Return True if valid, False otherwise
+        # Hint: if '..' in email: return False, then use re.match(pattern, email) is not None
         pass
 
 
@@ -81,20 +89,26 @@ class UserRepository:
     def save(self, user: User):
         """Save user to storage."""
         # TODO: Implement save functionality
-        # Store the user in self.users dictionary using username as key
+        # Store the user in self.users dictionary using username as key:
+        # self.users[user.username] = user
         pass
     
     def find_by_username(self, username: str):
         """Find user by username."""
         # TODO: Implement user lookup
-        # Return the user object if found, None if not found
+        # Check if username exists in self.users, return the user object if found
+        # Return None if not found: return self.users.get(username)
         pass
     
     def delete(self, username: str):
         """Delete user from storage."""
         # TODO: Implement user deletion
-        # Remove user from self.users if exists
+        # Check if user exists, then delete from self.users
         # Return True if deleted, False if user didn't exist
+        # if username in self.users:
+        #     del self.users[username]
+        #     return True
+        # return False
         pass
     
     def find_all(self):
@@ -127,33 +141,42 @@ class UserService:
         """Create a new user with validation."""
         # TODO: Implement user creation logic
         # Steps:
-        # 1. Validate email using self.email_validator.is_valid()
-        # 2. Check if user already exists using self.user_repository.exists()
-        # 3. Create new User object
-        # 4. Save user using self.user_repository.save()
-        # 5. Log success message using self.logger.info()
+        # 1. Validate email using self.email_validator.is_valid(email)
+        #    - If invalid: log error and raise ValueError("Invalid email format")
+        # 2. Check if user already exists using self.user_repository.exists(username)
+        #    - If exists: log error and raise ValueError("User already exists")
+        # 3. Create new User object: user = User(username, email)
+        # 4. Save user using self.user_repository.save(user)
+        # 5. Log success message: self.logger.info(f"User {username} created successfully")
         # 6. Return user.to_dict()
-        # Remember to handle validation failures with proper logging using self.logger.error() and exceptions
+        # Error logging format: self.logger.error(f"Failed to create user {username}: reason")
         pass
     
     def get_user(self, username: str):
         """Retrieve user data."""
         # TODO: Implement user retrieval
-        # 1. Find user using self.user_repository.find_by_username()
-        # 2. Log appropriate message using self.logger.info() or self.logger.warning()
-        # 3. Return user.to_dict() if found, None if not found
+        # 1. Find user using self.user_repository.find_by_username(username)
+        # 2. If user not found:
+        #    - Log warning: self.logger.warning(f"Failed to retrieve user {username}: User not found")
+        #    - Return None
+        # 3. If user found:
+        #    - Log success: self.logger.info(f"User {username} retrieved successfully")
+        #    - Return user.to_dict()
         pass
     
     def update_user(self, username: str, **kwargs):
         """Update user data with validation."""
         # TODO: Implement user update logic
-        # 1. Find user using repository
-        # 2. If email is being updated, validate it
-        # 3. Update user object
-        # 4. Save updated user
-        # 5. Log success using self.logger.info()
-        # 6. Return updated user.to_dict()
-        # Handle cases where user not found or email validation fails using self.logger.error()
+        # 1. Find user using self.user_repository.find_by_username(username)
+        #    - If not found: log error and raise ValueError("User not found")
+        # 2. If 'email' in kwargs:
+        #    - Validate email using self.email_validator.is_valid(kwargs['email'])
+        #    - If invalid: log error and raise ValueError("Invalid email format")
+        # 3. Update user object using user.update(**kwargs)
+        # 4. Save updated user using self.user_repository.save(user)
+        # 5. Log success: self.logger.info(f"User {username} updated successfully")
+        # 6. Return user.to_dict()
+        # Error logging format: self.logger.error(f"Failed to update user {username}: reason")
         pass
     
     def delete_user(self, username: str):
