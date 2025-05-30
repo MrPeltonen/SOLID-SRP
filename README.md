@@ -11,7 +11,6 @@ By the end of this exercise, you will:
 - ✅ Identify multiple responsibilities in a single class
 - ✅ Refactor code to follow SRP principles
 - ✅ See the immediate benefits of cleaner, more modular code
-- ✅ Experience how proper SRP makes testing easier
 
 ## 📋 Prerequisites
 
@@ -92,11 +91,13 @@ cd SOLID-SRP
 Run the example code to make sure everything works:
 
 ```bash
-# Run the unit tests (all should pass)
+# Run the unit tests
 python -m pytest test_user_manager.py -v
 ```
 
-If you see the example output and all tests pass, you're ready to start! 🎉
+**Expected Results:** You should see 16 tests pass and 12 tests fail. The failing tests are for the refactored implementation (which you'll complete during the exercise). The passing tests are for the original implementation, confirming your setup works correctly.
+
+If you see this mix of passing and failing tests, you're ready to start! 🎉
 
 ## 📚 Understanding the Exercise
 
@@ -129,11 +130,13 @@ Your task is to refactor this code into multiple classes, each with a single res
 - `Logger` - Handles logging
 - `UserService` - Orchestrates user operations
 
-**Note:** A complete reference solution is available in `refactored_partial.py`, but try the exercise yourself first! This file shows how the refactored code should look when properly following SRP principles.
+**Note:** A partial template solution is available in `refactored_partial.py` to help guide your refactoring. This template provides the class structure and method signatures, but you'll need to complete the implementation marked with TODO comments.
 
 ## 🧪 Running Tests
 
 The repository includes comprehensive unit tests that work both before and after refactoring. The test file (`test_user_manager.py`) is designed to automatically test both the original `UserManager` class and the refactored solution when available.
+
+**Important:** Until you complete the implementation in `refactored_partial.py`, some tests will fail for the refactored version. This is expected and part of the exercise - your goal is to make all tests pass for both implementations.
 
 ### Using pytest (recommended)
 ```bash
@@ -166,6 +169,15 @@ The tests cover:
 - ✅ Logging functionality
 - ✅ Complete workflow integration
 
+### Understanding Test Failures
+
+When you first run the tests with the incomplete `refactored_partial.py`, you'll see failures like:
+- `TypeError: 'NoneType' object is not subscriptable` - Methods returning `None` instead of expected data
+- `Failed: DID NOT RAISE <class 'ValueError'>` - Validation logic not implemented
+- `assert 0 > 0` - Empty logs because logging isn't implemented
+
+This is expected! As you implement each TODO section, more tests will pass.
+
 ## 🎯 Exercise Instructions
 
 ### Phase 1: Analyze the Current Code (15 minutes)
@@ -183,12 +195,20 @@ The tests cover:
 
 ### Phase 3: Refactor the Code (45 minutes)
 
-1. **Create individual classes** - Start with the simplest responsibilities
-2. **Update the main class** - Make it use the new specialized classes  
-3. **Run tests frequently** - Ensure functionality is preserved
+1. **Complete the template** - Use `refactored_partial.py` as your starting point
+2. **Implement TODO sections** - Fill in the missing functionality marked with TODO comments
+3. **Run tests frequently** - After each implementation, verify tests pass
 4. **Refine and improve** - Clean up code and improve design
 
-**Note**: A complete reference solution is available in `refactored_partial.py` to compare your implementation against after you've attempted the refactoring yourself.
+**Note**: The template in `refactored_partial.py` provides the class structure and method signatures to help guide your refactoring, but you'll need to complete the implementation marked with TODO comments.
+
+**Recommended Implementation Order:**
+1. Start with `User.to_dict()` method (simplest)
+2. Implement `EmailValidator.is_valid()` 
+3. Complete `Logger.log()` method
+4. Implement `UserRepository` methods (`save`, `find_by_username`, `delete`)
+5. Complete `User.update()` method
+6. Finally, implement `UserService` methods (`create_user`, `get_user`, `update_user`)
 
 ### Phase 4: Reflection (15 minutes)
 
@@ -204,7 +224,7 @@ SOLID-SRP/
 ├── requirements.txt          # Python dependencies
 ├── user_manager.py          # Original code with SRP violations
 ├── test_user_manager.py     # Comprehensive unit tests (pytest)
-├── refactored_partial.py    # Complete refactored solution (reference)
+├── refactored_partial.py    # Partial template solution (complete the TODOs)
 ├── users_backup.json       # Backup data file (generated during testing)
 ├── .gitignore              # Git ignore file
 ├── venv/                   # Virtual environment (created after setup)
