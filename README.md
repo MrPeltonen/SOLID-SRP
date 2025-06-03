@@ -284,9 +284,6 @@ Want to continue learning? Try these challenges:
 ## 📖 Additional Resources
 
 - [SOLID Principles Explained](https://en.wikipedia.org/wiki/SOLID)
-- [Clean Code by Robert Martin](https://www.amazon.com/Clean-Code-Handbook-Software-Craftsmanship/dp/0132350882)
-- [Python Testing with pytest](https://pragprog.com/titles/bopytest/python-testing-with-pytest/)
-- [Effective Python by Brett Slatkin](https://effectivepython.com/)
 
 ---
 
