@@ -32,6 +32,11 @@ Before starting this exercise, ensure you have:
 
 ### Step 1: Download the Code
 
+**Where to work:** You can use VS Code's built-in terminal (recommended) or your system's terminal/command prompt.
+
+**To open VS Code's terminal:**
+- In VS Code: `Terminal` → `New Terminal` (or press `` Ctrl+` `` / `` Cmd+` ``)
+
 Clone this repository to your local machine:
 
 ```bash
@@ -40,7 +45,21 @@ git clone git@github.com:MrPeltonen/SOLID-SRP.git
 cd SOLID-SRP
 ```
 
-### Step 2: Set Up Python Environment
+**New to Git?** 
+- Git cloning downloads a copy of the code to your computer
+- If you don't have Git installed, download it from [git-scm.com](https://git-scm.com/)
+- For a beginner's guide to Git: [Git Tutorial for Beginners](https://www.atlassian.com/git/tutorials/what-is-version-control)
+
+### Step 2: Open the Project in VS Code
+
+1. Open VS Code
+2. Click `File` → `Open Folder` 
+3. Navigate to and select the `SOLID-SRP` folder you just downloaded
+4. Open the integrated terminal: `Terminal` → `New Terminal` (or press `` Ctrl+` `` / `` Cmd+` ``)
+
+### Step 3: Set Up Python Environment
+
+**Important:** All the following commands should be run in VS Code's integrated terminal (or your system terminal if you prefer).
 
 #### For macOS Users:
 
@@ -50,15 +69,21 @@ cd SOLID-SRP
    ```
    If Python 3.9+ is not installed, install it using Homebrew:
    ```bash
-   # Install Python
+   # First install Homebrew if you don't have it
+   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+   # Then install Python
    brew install python@3.9
    ```
 
-2. **Create a virtual environment (recommended):**
+2. **Create a virtual environment (in VS Code terminal):**
    ```bash
+   # This creates a folder called 'venv' in your project directory
    python3 -m venv venv
+   # This activates the virtual environment
    source venv/bin/activate
    ```
+   
+   **You'll know it worked when you see `(venv)` at the beginning of your terminal prompt.**
 
 3. **Install dependencies:**
    ```bash
@@ -70,25 +95,30 @@ cd SOLID-SRP
 1. **Install Python 3.9+:**
    - Download Python from [python.org](https://www.python.org/downloads/)
    - During installation, make sure to check "Add Python to PATH"
-   - Verify installation by opening Command Prompt and running:
+   - Restart VS Code after installation
+   - Verify installation in VS Code's terminal:
      ```cmd
      python --version
      ```
 
-2. **Create a virtual environment (recommended):**
+2. **Create a virtual environment (in VS Code terminal):**
    ```cmd
+   # This creates a folder called 'venv' in your project directory
    python -m venv venv
+   # This activates the virtual environment
    venv\Scripts\activate
    ```
+   
+   **You'll know it worked when you see `(venv)` at the beginning of your terminal prompt.**
 
 3. **Install dependencies:**
    ```cmd
    pip install -r requirements.txt
    ```
 
-### Step 3: Verify Your Setup
+### Step 4: Verify Your Setup
 
-Run the example code to make sure everything works:
+**Run this command in VS Code's terminal (with your virtual environment activated):**
 
 ```bash
 # Run the unit tests
@@ -131,11 +161,16 @@ Your task is to refactor this code into multiple classes, each with a single res
 
 ## 🧪 Running Tests
 
+**Where to run:** All test commands should be executed in VS Code's integrated terminal with your virtual environment activated (you should see `(venv)` in your terminal prompt).
+
 The repository includes comprehensive unit tests that work both before and after refactoring. The test file (`test_user_manager.py`) is designed to automatically test both the original `UserManager` class and the refactored solution when available.
 
 **Important:** Until you complete the implementation in `refactored_partial.py`, some tests will fail for the refactored version. This is expected and part of the exercise - your goal is to make all tests pass for both implementations.
 
 ### Using pytest (recommended)
+
+**In VS Code's terminal (with venv activated):**
+
 ```bash
 # Run all tests with verbose output
 python -m pytest test_user_manager.py -v
@@ -146,6 +181,12 @@ python -m pytest test_user_manager.py --cov=user_manager --cov-report=html
 # Run specific test
 python -m pytest test_user_manager.py::TestUserManager::test_create_user_success -v
 ```
+
+**Alternative: Using VS Code's Test Explorer**
+1. Install the "Python Test Explorer" extension in VS Code
+2. Open the test file (`test_user_manager.py`) in VS Code
+3. Click the "Run Tests" button that appears above test functions
+4. View results in VS Code's Test Explorer panel
 
 ### How the Tests Work
 
@@ -177,11 +218,13 @@ This is expected! As you implement each TODO section, more tests will pass.
 
 ## 🎯 Exercise Instructions
 
+**Important:** All Python commands in this exercise should be run in VS Code's integrated terminal with your virtual environment activated (you should see `(venv)` in your terminal prompt).
+
 ### Phase 1: Analyze the Current Code (15 minutes)
 
-1. **Read through `user_manager.py`** - Identify all the different responsibilities
-2. **Run the code** - See how it works: `python user_manager.py`
-3. **Run the tests** - Understand what functionality needs to be preserved
+1. **Read through `user_manager.py`** - Open the file in VS Code to identify all the different responsibilities
+2. **Run the code** - In VS Code's terminal, run: `python user_manager.py`
+3. **Run the tests** - In VS Code's terminal, run: `python -m pytest test_user_manager.py -v`
 4. **List the violations** - Write down each responsibility you identify
 
 ### Phase 2: Plan Your Refactoring (10 minutes)
@@ -192,9 +235,9 @@ This is expected! As you implement each TODO section, more tests will pass.
 
 ### Phase 3: Refactor the Code (45 minutes)
 
-1. **Complete the template** - Use `refactored_partial.py` as your starting point
+1. **Complete the template** - Open `refactored_partial.py` in VS Code as your starting point
 2. **Implement TODO sections** - Fill in the missing functionality marked with TODO comments
-3. **Run tests frequently** - After each implementation, verify tests pass
+3. **Run tests frequently** - After each implementation, run `python -m pytest test_user_manager.py -v` in VS Code's terminal
 4. **Refine and improve** - Clean up code and improve design
 
 **Note**: The template in `refactored_partial.py` provides the class structure and method signatures to help guide your refactoring, but you'll need to complete the implementation marked with TODO comments.
@@ -240,25 +283,52 @@ SOLID-SRP/
 
 ### Common Issues
 
+**Virtual environment not activated?**
+- You should see `(venv)` at the beginning of your VS Code terminal prompt
+- If not, run the activation command again:
+  - **macOS:** `source venv/bin/activate`
+  - **Windows:** `venv\Scripts\activate`
+- If activation fails, make sure you created the virtual environment first
+
+**"Command not found" or "python not recognized"?**
+- **macOS:** Try using `python3` instead of `python`
+- **Windows:** Make sure Python was added to PATH during installation
+- Restart VS Code after installing Python
+
 **Tests failing after refactoring?**
 - Check that you didn't change the public interface
 - Ensure all functionality is preserved
 - Verify import statements are correct
+- Run tests frequently to catch issues early
 
-**Import errors?**
-- Make sure your virtual environment is activated
+**Import errors or "Module not found"?**
+- Make sure your virtual environment is activated (look for `(venv)` in terminal)
+- Ensure you ran `pip install -r requirements.txt`
 - Check that all required files are in the correct locations
-- Verify Python path is set correctly
+
+**Git clone not working?**
+- Make sure Git is installed: download from [git-scm.com](https://git-scm.com/)
+- Try the HTTPS clone instead: `git clone https://github.com/MrPeltonen/SOLID-SRP.git`
 
 **Python version issues?**
-- Ensure you're using Python 3.9 or higher
+- Ensure you're using Python 3.9 or higher: `python --version` or `python3 --version`
 - Consider using pyenv to manage multiple Python versions
+
+### VS Code Specific Help
+
+**Terminal not opening in VS Code?**
+- Use the menu: `Terminal` → `New Terminal`
+- Or use keyboard shortcut: `` Ctrl+` `` (Windows) / `` Cmd+` `` (Mac)
+
+**Can't see test results clearly?**
+- Use the verbose flag: `python -m pytest test_user_manager.py -v`
+- Install the Python Test Explorer extension for a graphical interface
 
 ### Getting Help
 
 If you encounter issues:
-1. Check the error messages carefully
-2. Verify your environment setup
+1. Check the error messages carefully - they often tell you exactly what's wrong
+2. Verify your environment setup (virtual environment activated, Python installed)
 3. Review the original working code
 4. Ask for help during the session!
 
