@@ -45,6 +45,12 @@ git clone git@github.com:MrPeltonen/SOLID-SRP.git
 cd SOLID-SRP
 ```
 
+```bash
+# If the above does not work try:
+git clone https://github.com/MrPeltonen/SOLID-SRP.git  
+cd SOLID-SRP
+```
+
 **New to Git?** 
 - Git cloning downloads a copy of the code to your computer
 - If you don't have Git installed, download it from [git-scm.com](https://git-scm.com/)
@@ -106,6 +112,14 @@ cd SOLID-SRP
    # This creates a folder called 'venv' in your project directory
    python -m venv venv
    # This activates the virtual environment
+   venv\Scripts\activate
+   ```
+
+   If you get a security error, run this command in the terminal (PowerShell):
+
+   ```
+   Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process
+   #And then try to activate the virtual environment again:
    venv\Scripts\activate
    ```
    
